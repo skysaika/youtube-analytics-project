@@ -9,7 +9,6 @@ from settings import ENV_FILE
 load_dotenv(ENV_FILE)
 
 
-
 class Channel:
     """Класс для ютуб-канала"""
     __api_key: str = os.getenv('API_KEY')
@@ -33,32 +32,32 @@ class Channel:
 
     @property
     def title(self) -> str:
-        """Возвращает название канала."""
+        """Геттер возвращает название канала."""
         return self.__title
 
     @property
     def description(self) -> str:
-        """Возвращает описание канала."""
+        """Геттер возвращает описание канала."""
         return self.__description
 
     @property
     def url(self) -> str:
-        """Возвращает url канала."""
+        """Геттер возвращает url канала."""
         return self.__url
 
     @property
     def subscribers_count(self) -> int:
-        """Возвращает количество подписчиков канала."""
+        """Геттер возвращает количество подписчиков канала."""
         return self.__subscribers_count
 
     @property
     def video_count(self) -> int:
-        """Возвращает количество видео канала."""
+        """Геттер возвращает количество видео канала."""
         return self.__video_count
 
     @property
     def views_count(self) -> int:
-        """Возвращает количество просмотров канала."""
+        """Геттер возвращает количество просмотров канала."""
         return self.__views_count
 
     @classmethod
@@ -66,7 +65,7 @@ class Channel:
         """Класс-метод возвращает объект для работы с YouTube API."""
         return cls.__youtube
 
-    def to_json(self, filename) -> dict:
+    def to_json(self, filename) -> None:
         """Метод возвращает в json значения атрибутов экземпляра Channel."""
         data = {
             'channel_id': self.__channel_id,
@@ -77,6 +76,5 @@ class Channel:
             'video_count': self.__video_count,
             'views_count': self.__views_count
         }
-        return data
-
-
+        with open(filename, 'w') as file:
+            json.dump(data, file, indent=4)
