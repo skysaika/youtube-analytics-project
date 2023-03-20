@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from googleapiclient.discovery import build
 
 from settings import ENV_FILE
-from src.utils import print_info
 
 load_dotenv(ENV_FILE)
 
@@ -23,6 +22,14 @@ class Channel:
         self.__title = self.__channel['items'][0]['snippet']['title']
         self.__description = self.__channel['items'][0]['snippet']['description']
         self.__url = f'https://www.youtube.com/channel/{self.__channel_id}'
+        self.__subscribers_count = int(self.__channel['items'][0]['statistics']['subscriberCount'])
+        self.__video_count = int(self.__channel['items'][0]['statistics']['videoCount'])
+        self.__views_count = int(self.__channel['items'][0]['statistics']['viewCount'])
+
+    def print_info(self) -> None:
+        """Выводит в консоль информацию о канале."""
+        channel = self.__youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
+        print(json.dumps(channel, indent=2, ensure_ascii=False))
 
 
 
