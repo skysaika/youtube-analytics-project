@@ -31,5 +31,52 @@ class Channel:
         channel = self.__youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
         print(json.dumps(channel, indent=2, ensure_ascii=False))
 
+    @property
+    def title(self) -> str:
+        """Возвращает название канала."""
+        return self.__title
+
+    @property
+    def description(self) -> str:
+        """Возвращает описание канала."""
+        return self.__description
+
+    @property
+    def url(self) -> str:
+        """Возвращает url канала."""
+        return self.__url
+
+    @property
+    def subscribers_count(self) -> int:
+        """Возвращает количество подписчиков канала."""
+        return self.__subscribers_count
+
+    @property
+    def video_count(self) -> int:
+        """Возвращает количество видео канала."""
+        return self.__video_count
+
+    @property
+    def views_count(self) -> int:
+        """Возвращает количество просмотров канала."""
+        return self.__views_count
+
+    @classmethod
+    def get_service(cls):
+        """Класс-метод возвращает объект для работы с YouTube API."""
+        return cls.__youtube
+
+    def to_json(self, filename) -> dict:
+        """Метод возвращает в json значения атрибутов экземпляра Channel."""
+        data = {
+            'channel_id': self.__channel_id,
+            'title': self.__title,
+            'description': self.__description,
+            'url': self.__url,
+            'subscribers_count': self.__subscribers_count,
+            'video_count': self.__video_count,
+            'views_count': self.__views_count
+        }
+        return data
 
 
