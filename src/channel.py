@@ -60,6 +60,17 @@ class Channel:
         """Геттер возвращает количество просмотров канала."""
         return self.__views_count
 
+    @property
+    def channel_id(self) -> str:
+        """Геттер возвращает id канала."""
+        return self.__channel_id
+
+    @channel_id.setter
+    def channel_id(self, id):
+        """Сеттер возвращает id канала."""
+        print("AttributeError: property 'channel_id' of 'Channel' object has no setter")
+
+
     @classmethod
     def get_service(cls):
         """Класс-метод возвращает объект для работы с YouTube API."""
