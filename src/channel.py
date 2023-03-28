@@ -68,7 +68,7 @@ class Channel:
     @channel_id.setter
     def channel_id(self, id):
         """Сеттер возвращает id канала."""
-        print("AttributeError: property 'channel_id' of 'Channel' object has no setter")
+        raise AttributeError("property 'channel_id' of 'Channel' object has no setter")
 
 
     @classmethod
@@ -89,3 +89,19 @@ class Channel:
         }
         with open(filename, 'w') as file:
             json.dump(data, file, indent=4)
+
+    def __str__(self) -> str:
+        """Метод возвращает строку с данными канала."""
+        return f'{self.__title} ({self.__url})'
+
+    def __add__(self, other: 'Channel') -> int:
+        """Метод складывает два канала Channel по количеству подписчиков"""
+        return self.__subscribers_count + other.__subscribers_count
+
+    def __sub__(self, other: 'Channel') -> int:
+        """Метод вычитает канал Channel по количеству подписчиков"""
+        return self.__subscribers_count - other.__subscribers_count
+
+    def __ge__(self, other: 'Channel') -> bool:
+        """Метод сравнивает два канала Channel по количеству подписчиков"""
+        return self.__subscribers_count >= other.__subscribers_count
