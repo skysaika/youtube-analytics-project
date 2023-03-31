@@ -70,7 +70,6 @@ class Channel:
         """Сеттер возвращает id канала."""
         raise AttributeError("property 'channel_id' of 'Channel' object has no setter")
 
-
     @classmethod
     def get_service(cls):
         """Класс-метод возвращает объект для работы с YouTube API."""
