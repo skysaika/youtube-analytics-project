@@ -9,7 +9,8 @@ if __name__ == '__main__':
 
     duration = pl.total_duration
     assert str(duration) == "3:41:01"
-    assert issubclass(duration, datetime.timedelta)
+    assert isinstance(duration, datetime.timedelta)
     assert duration.total_seconds() == 13261.0
 
-    assert pl.show_best_video() == "https://youtu.be/9Bv2zltQKQA"
+    assert pl.show_best_video() == "https://www.youtube.com/watch?v=9Bv2zltQKQA"
+    # "https://youtu.be/9Bv2zltQKQA" - короткая ссылка не работала
