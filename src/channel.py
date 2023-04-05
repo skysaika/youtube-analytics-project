@@ -11,8 +11,7 @@ from settings import ENV_FILE
 load_dotenv(ENV_FILE)
 
 
-class Youtube:
-
+class YouTube:
     """Класс для ютуб-канала"""
     __api_key: str = os.getenv('API_KEY')
     __youtube = build('youtube', 'v3', developerKey=__api_key)

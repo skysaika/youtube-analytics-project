@@ -26,4 +26,3 @@ class PlayList:
     def show_best_video(self):
         max_like_video = max(self.__videos_in_playlist, key=lambda v: int(v['statistics']['likeCount']))
         return Video(max_like_video['id']).url
-
