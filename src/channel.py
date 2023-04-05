@@ -1,6 +1,8 @@
+import datetime
 import json
 import os
 
+import isodate
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
 
@@ -9,15 +11,78 @@ from settings import ENV_FILE
 load_dotenv(ENV_FILE)
 
 
-class Channel:
+class Youtube:
+
     """Класс для ютуб-канала"""
     __api_key: str = os.getenv('API_KEY')
     __youtube = build('youtube', 'v3', developerKey=__api_key)
 
+    @classmethod
+    def get_channel(cls, channel_id):
+        """Класс метод получает каналы"""
+        return cls.__youtube.channels().list(id=channel_id, part='snippet,statistics').execute()
+
+    @classmethod
+    def get_video(cls, video_id):
+        """Класс метод получает список видео"""
+        return cls.__youtube.videos().list(
+            part='snippet,statistics,contentDetails,topicDetails',
+            id=video_id
+        ).execute()
+
+    @classmethod
+    def get_playlist(cls, playlist_id):
+        """Класс метод получает плейлисты"""
+        return cls.__youtube.playlists().list(
+            id=playlist_id,
+            part='contentDetails, snippet',
+            maxResults=50,
+        ).execute()
+
+    @classmethod
+    def get_playlist_video_ids(cls, playlist_id):
+        """Класс метод получает все id определенного плейлиста"""
+        ids = []
+        playlist = cls.__youtube.playlistItems().list(
+            playlistId=playlist_id,
+            part='contentDetails',
+            maxResults=50,
+        ).execute()
+        for video in playlist['items']:
+            ids.append(video['contentDetails']['videoId'])
+        return ids
+
+    @classmethod
+    def get_videos_duration(cls, playlist_id) -> datetime.timedelta:
+        video_response = cls.__youtube.videos().list(
+            part='contentDetails,statistics',
+            id=','.join(cls.get_playlist_video_ids(playlist_id))
+        ).execute()
+        delta = datetime.timedelta()
+        for video in video_response['items']:
+            iso_8601_duration = video['contentDetails']['duration']
+            duration = isodate.parse_duration(iso_8601_duration)
+            delta += duration
+        return delta
+
+    @classmethod
+    def get_videos_in_playlist(cls, playlist_id):
+        video_response = cls.__youtube.videos().list(
+            part='contentDetails,statistics',
+            id=','.join(cls.get_playlist_video_ids(playlist_id))
+        ).execute()
+        return video_response['items']
+
+
+
+
+
+class Channel:
+    """Класс для каналов"""
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
         self.__channel_id = channel_id
-        self.__channel = self.__youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
+        self.__channel = Youtube.get_channel(self.__channel_id)
         self.__title = self.__channel['items'][0]['snippet']['title']
         self.__description = self.__channel['items'][0]['snippet']['description']
         self.__url = f'https://www.youtube.com/channel/{self.__channel_id}'
@@ -27,8 +92,7 @@ class Channel:
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
-        channel = self.__youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
-        print(json.dumps(channel, indent=2, ensure_ascii=False))
+        print(json.dumps(self.__channel, indent=2, ensure_ascii=False))
 
     @property
     def title(self) -> str:
@@ -70,10 +134,6 @@ class Channel:
         """Сеттер возвращает id канала."""
         raise AttributeError("property 'channel_id' of 'Channel' object has no setter")
 
-    @classmethod
-    def get_service(cls):
-        """Класс-метод возвращает объект для работы с YouTube API."""
-        return cls.__youtube
 
     def to_json(self, filename) -> None:
         """Метод возвращает в json значения атрибутов экземпляра Channel."""
@@ -104,3 +164,5 @@ class Channel:
     def __ge__(self, other: 'Channel') -> bool:
         """Метод сравнивает два канала Channel по количеству подписчиков"""
         return self.__subscribers_count >= other.__subscribers_count
+
+
