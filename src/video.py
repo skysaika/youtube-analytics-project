@@ -1,4 +1,4 @@
-from src.channel import YouTube
+from src.youtube import YouTube
 
 
 class Video:
