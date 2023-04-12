@@ -51,6 +51,7 @@ class YouTube:
 
     @classmethod
     def get_videos_duration(cls, playlist_id) -> datetime.timedelta:
+        """Класс метод описание всех видео"""
         video_response = cls.__youtube.videos().list(
             part='contentDetails,statistics',
             id=','.join(cls.get_playlist_video_ids(playlist_id))
@@ -64,6 +65,7 @@ class YouTube:
 
     @classmethod
     def get_videos_in_playlist(cls, playlist_id):
+        """Класс метод получает видео в плейлисте"""
         video_response = cls.__youtube.videos().list(
             part='contentDetails,statistics',
             id=','.join(cls.get_playlist_video_ids(playlist_id))
